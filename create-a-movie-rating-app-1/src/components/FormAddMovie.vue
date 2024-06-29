@@ -1,24 +1,32 @@
 <script setup>
 import { ref } from "vue";
 
-const props = defineProps(["movies", "handleClose"]);
-
-const movieToSend = ref({
-  id: props.movies.length + 1,
-  name: "",
-  description: "",
-  image: "",
-  rating: 0,
-  genres: [],
-  inTheaters: false,
-});
+const props = defineProps(["movies", "handleClose", "movie"]);
+let movieToSend;
+if (!props.movie) {
+  movieToSend = ref({
+    id: props.movies.length + 1,
+    name: "",
+    description: "",
+    image: "",
+    rating: 0,
+    genres: [],
+    inTheaters: false,
+  });
+} else {
+  movieToSend = ref(props.movie);
+}
+console.log(movieToSend.value);
 
 const handleSubmit = (e) => {
   e.preventDefault();
   if (!movieToSend.value.name | !movieToSend.value.description | !movieToSend.value.image | movieToSend.value.genre) {
     return;
   }
-  props.movies.push(movieToSend.value);
+  if (!props.movie) {
+    props.movies.push(movieToSend.value);
+  }
+
   movieToSend.value = {
     id: props.movies.length,
     name: "",
@@ -46,7 +54,8 @@ const handleClear = () => {
 
 <template>
   <div class="absolute z-50 text-white p-52 w-screen h-screen top-0 left-0 backdrop-blur-xl flex justify-center items-center">
-    <form class="bg-slate-800 p-10 w-full flex flex-col items-start justify-start gap-5 rounded" @submit="handleSubmit">
+    <form class="bg-slate-800 relative p-10 w-full flex flex-col items-start justify-start gap-5 rounded" @submit="handleSubmit">
+      <p @click="handleClose" class="absolute text-white cursor-pointer hover:text-red-500 right-5 top-2">X</p>
       <div class="flex flex-col w-full">
         <label>Name</label>
         <input class="border border-slate-500 p-1 rounded w-full bg-slate-900" type="text" v-model="movieToSend.name" />

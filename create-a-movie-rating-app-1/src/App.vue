@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { items } from "./movies.json";
 import { StarIcon } from "@heroicons/vue/24/solid";
 import FormAddMovie from "./components/FormAddMovie.vue";
 
 const movies = ref(items);
+const movieToEdit = ref(null);
 const isAddMovieOpen = ref(false);
 
 const handleStar = (movieID, n) => {
@@ -14,13 +15,43 @@ const handleStar = (movieID, n) => {
 const handleClose = () => {
   isAddMovieOpen.value = false;
 };
+
+const handleEdit = (id) => {
+  const index = movies.value.findIndex((movie) => movie.id === id);
+  if (index !== -1) {
+    const targetMovie = movies.value[index];
+    // console.log(targetMovie);
+    movieToEdit.value = targetMovie;
+    isAddMovieOpen.value = true;
+  } else {
+    console.warn("Movie with ID", id, "not found"); // Handle no match scenario
+  }
+};
+
+const handleDelete = (id) => {
+  const filtered = movies.value.filter((movie) => movie.id != id);
+  movies.value = filtered;
+};
+
+const averageRating = computed(() => {
+  let averageRating = 0;
+  for (let movie of movies.value) {
+    averageRating += movie.rating;
+  }
+  return movies.value.length ? Math.round(averageRating / movies.value.length) : 0;
+});
 </script>
 
 <template>
-  <button class="px-3 absolute top-5 right-5 py-1 bg-blue-500 text-white rounded" @click="isAddMovieOpen = !isAddMovieOpen">Add Movie</button>
-
-  <FormAddMovie v-if="isAddMovieOpen" :movies :handleClose="handleClose" />
-  <section class="flex flex-row flex-wrap gap-5 w-full pt-10 items-center justify-center">
+  <FormAddMovie v-if="isAddMovieOpen" :movies :handleClose="handleClose" :movie="movieToEdit" />
+  <div class="flex flex-wrap items-center justify-between px-10">
+    <div class="flex flex-col justify-start">
+      <p class="w-auto text-white font-bold">Average Rating {{ averageRating }}</p>
+      <p class="w-auto text-white font-bold">Number of Movies {{ movies.length }}</p>
+    </div>
+    <button class="px-3 py-1 bg-blue-500 text-white rounded" @click="isAddMovieOpen = !isAddMovieOpen">Add Movie</button>
+  </div>
+  <section class="flex flex-row flex-wrap gap-5 w-full pt-10 items-center justify-center pb-10">
     <div
       class="relative flex h-[32rem] flex-col items-start justify-between rounded overflow-hidden bg-white"
       v-for="movie in movies"
@@ -29,6 +60,10 @@ const handleClose = () => {
       <aside class="absolute top-2 right-2">
         <StarIcon class="w-9 text-yellow-500" :class="{ 'text-slate-500': !movie.rating }" />
         <span class="font-sm absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">{{ movie.rating ? movie.rating : "-" }}</span>
+      </aside>
+      <aside class="absolute flex flex-row gap-2 top-2 left-2">
+        <button class="text-xs bg-blue-500 rounded-full px-2 py-0.5 text-white" @click.prevent="handleEdit(movie.id)">Edit</button>
+        <button class="text-xs bg-red-500 rounded-full px-2 py-0.5 text-white" @click.prevent="handleDelete(movie.id)">Delete</button>
       </aside>
 
       <img class="w-64 max-h-80 object-cover" :src="movie.image" />
