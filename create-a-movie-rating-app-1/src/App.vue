@@ -2,16 +2,25 @@
 import { ref } from "vue";
 import { items } from "./movies.json";
 import { StarIcon } from "@heroicons/vue/24/solid";
+import FormAddMovie from "./components/FormAddMovie.vue";
 
 const movies = ref(items);
+const isAddMovieOpen = ref(false);
 
 const handleStar = (movieID, n) => {
   movies.value[movieID - 1].rating = n;
 };
+
+const handleClose = () => {
+  isAddMovieOpen.value = false;
+};
 </script>
 
 <template>
-  <section class="flex flex-row flex-wrap gap-5 items-center justify-center">
+  <button class="px-3 absolute top-5 right-5 py-1 bg-blue-500 text-white rounded" @click="isAddMovieOpen = !isAddMovieOpen">Add Movie</button>
+
+  <FormAddMovie v-if="isAddMovieOpen" :movies :handleClose="handleClose" />
+  <section class="flex flex-row flex-wrap gap-5 w-full pt-10 items-center justify-center">
     <div
       class="relative flex h-[32rem] flex-col items-start justify-between rounded overflow-hidden bg-white"
       v-for="movie in movies"
