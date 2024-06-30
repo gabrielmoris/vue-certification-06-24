@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import AppModal from "./AppModal.vue";
 
 const props = defineProps(["movies", "handleClose", "movie"]);
 let movieToSend;
@@ -52,9 +53,8 @@ const handleClear = () => {
 </script>
 
 <template>
-  <div class="absolute z-50 text-white p-52 w-screen h-screen top-0 left-0 backdrop-blur-xl flex justify-center items-center">
-    <form class="bg-slate-800 relative p-10 w-full flex flex-col items-start justify-start gap-5 rounded" @submit="handleSubmit">
-      <p @click="handleClose" class="absolute text-white cursor-pointer hover:text-red-500 right-5 top-2">X</p>
+  <AppModal @handleClose="handleClose">
+    <form class="w-full h-full" @submit="handleSubmit">
       <div class="flex flex-col w-full">
         <label>Name</label>
         <input class="border border-slate-500 p-1 rounded w-full bg-slate-900" type="text" v-model="movieToSend.name" />
@@ -86,5 +86,5 @@ const handleClear = () => {
         <button @click="handleSubmit" class="px-3 py-1 bg-blue-500 text-white rounded" type="submit">Submit</button>
       </div>
     </form>
-  </div>
+  </AppModal>
 </template>
