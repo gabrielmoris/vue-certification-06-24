@@ -10,6 +10,7 @@ const isAddMovieOpen = ref(false);
 
 const handleClose = () => {
   isAddMovieOpen.value = false;
+  const body = (document.querySelectorAll("body")[0].style.overflow = "auto");
 };
 
 const handleEdit = (id) => {
@@ -29,6 +30,11 @@ const handleDelete = (id) => {
   movies.value = filtered;
 };
 
+const handleAddEdditMovie = () => {
+  isAddMovieOpen.value = !isAddMovieOpen.value;
+  const body = (document.querySelectorAll("body")[0].style.overflow = "hidden");
+};
+
 const averageRating = computed(() => {
   let averageRating = 0;
   for (let movie of movies.value) {
@@ -39,15 +45,15 @@ const averageRating = computed(() => {
 </script>
 
 <template>
-  <FormAddMovie v-if="isAddMovieOpen" :movies :handleClose="handleClose" :movie="movieToEdit" />
+  <FormAddMovie class="z-50" v-if="isAddMovieOpen" :movies :handleClose="handleClose" :movie="movieToEdit" />
   <div class="flex flex-wrap items-center justify-between px-10">
     <div class="flex flex-col justify-start">
       <p class="w-auto text-white font-bold">Average Rating {{ averageRating }}</p>
       <p class="w-auto text-white font-bold">Number of Movies {{ movies.length }}</p>
     </div>
-    <button class="px-3 py-1 bg-blue-500 text-white rounded" @click="isAddMovieOpen = !isAddMovieOpen">Add Movie</button>
+    <button class="px-3 py-1 bg-blue-500 text-white rounded" @click="handleAddEdditMovie">Add Movie</button>
   </div>
-  <section class="flex flex-row flex-wrap gap-5 w-full pt-10 items-center justify-center pb-10">
+  <main class="flex flex-row flex-wrap gap-5 w-full pt-10 items-center justify-center pb-10">
     <MovieItem v-for="movie in movies" :key="movie.id" :movie :handleDelete :handleEdit />
-  </section>
+  </main>
 </template>
