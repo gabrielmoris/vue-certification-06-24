@@ -16,7 +16,6 @@ if (!props.movie) {
 } else {
   movieToSend = ref(props.movie);
 }
-console.log(movieToSend.value);
 
 const handleSubmit = (e) => {
   e.preventDefault();
