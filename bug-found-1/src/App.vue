@@ -9,6 +9,7 @@ const MovieForm = defineAsyncComponent(() => import("@/MovieForm.vue"));
 
 const movies = ref(items);
 const currentMovie = ref();
+
 function updateRating(id, rating) {
   movies.value = movies.value.map((movie) => {
     if (movie.id === id) {
@@ -18,7 +19,7 @@ function updateRating(id, rating) {
   });
 }
 function removeMovie(id) {
-  movies.value.filter((movie) => movie.id !== id);
+  movies.value = movies.value.filter((movie) => movie.id !== id);
 }
 function editMovie(id) {
   currentMovie.value = movies.value.find((movie) => movie.id === id);
@@ -38,7 +39,7 @@ function updateMovie(data) {
       data.rating = m.rating;
       return data;
     }
-    return data;
+    return m;
   });
   hideForm();
 }
@@ -56,10 +57,9 @@ function hideForm() {
 function showForm() {
   showMovieForm.value = true;
 }
+
 const averageRating = computed(() => {
-  const avg = movies.value
-    .map((movie) => parseInt(movie.rating || 0))
-    .reduce((a, b) => a + b, 0);
+  const avg = movies.value.map((movie) => parseInt(movie.rating || 0)).reduce((a, b) => a + b, 0);
   return Number(avg / movies.value.length).toFixed(1);
 });
 const totalMovies = computed(() => {
@@ -75,17 +75,8 @@ function removeRatings() {
 
 <template>
   <div class="app">
-    <AppModal
-      v-if="showMovieForm"
-      :title="currentMovie?.id ? 'Edit Movie' : 'Add Movie'"
-      @close="hideForm()"
-    >
-      <MovieForm
-        v-if="showMovieForm"
-        @update:modelValue="saveMovie"
-        :modelValue="currentMovie"
-        @cancel="hideForm"
-      />
+    <AppModal v-if="showMovieForm" :title="currentMovie?.id ? 'Edit Movie' : 'Add Movie'" @close="hideForm()">
+      <MovieForm v-if="showMovieForm" @update:modelValue="saveMovie" :modelValue="currentMovie" @cancel="hideForm" />
     </AppModal>
     <div class="movie-actions-list-wrapper">
       <div class="movie-actions-list-info">
@@ -95,12 +86,7 @@ function removeRatings() {
       </div>
       <div class="flex-spacer"></div>
       <div class="movie-actions-list-actions">
-        <button
-          class="self-end movie-actions-list-action-button button-primary justify-self-end"
-          @click="removeRatings"
-        >
-          Remove Ratings
-        </button>
+        <button class="self-end movie-actions-list-action-button button-primary justify-self-end" @click="removeRatings">Remove Ratings</button>
         <button
           class="movie-actions-list-action-button"
           :class="{
@@ -115,14 +101,7 @@ function removeRatings() {
       </div>
     </div>
     <div class="movie-list">
-      <MovieItem
-        v-for="movie in movies"
-        :key="movie.id"
-        :movie="movie"
-        @edit="editMovie"
-        @remove="removeMovie"
-        v-bind:update:rating="updateRating"
-      />
+      <MovieItem v-for="movie in movies" :key="movie.id" :movie="movie" @edit="editMovie" @remove="removeMovie" @update:rating="updateRating" />
     </div>
   </div>
 </template>

@@ -42,24 +42,13 @@ function editMovie() {
           }"
         />
         <div class="movie-item-star-content-wrapper">
-          <span
-            v-if="!notRated"
-            id="rating-stars"
-            class="movie-item-star-content-rating-rated"
-          >
+          <span v-if="!notRated" id="rating-stars" class="movie-item-star-content-rating-rated">
             {{ movie.rating }}
           </span>
-          <span v-else class="movie-item-star-content-rating-not-rated">
-            -
-          </span>
+          <span v-else class="movie-item-star-content-rating-not-rated"> - </span>
         </div>
       </div>
-      <img
-        v-if="movie?.image"
-        :src="movie.image"
-        class="movie-item-image"
-        :alt="movie.name"
-      />
+      <img v-if="movie?.image" :src="movie.image" class="movie-item-image" :alt="movie.name" />
       <span v-else class="movie-item-no-image">
         <span class="text-white text-4xl">No image</span>
       </span>
@@ -69,29 +58,20 @@ function editMovie() {
       <div class="movie-item-title-wrapper">
         <h3 class="movie-item-title">{{ movie.name }}</h3>
         <div class="movie-item-genres-wrapper">
-          <span
-            v-for="genre in movie.genres"
-            :key="`${movie.id}-${genre}`"
-            class="movie-item-genre-tag"
-            >{{ genre }}</span
-          >
+          <span v-for="genre in movie.genres" :key="`${movie.id}-${genre}`" class="movie-item-genre-tag">{{ genre }}</span>
         </div>
       </div>
       <div class="movie-item-description-wrapper">
         <p class="movie-item-description">{{ movie.description }}</p>
       </div>
       <div class="movie-item-rating-wrapper">
-        <span class="movie-item-rating-text">
-          Rating: ({{ movie.rating }}/5)
-        </span>
+        <span class="movie-item-rating-text"> Rating: ({{ movie.rating }}/5) </span>
         <div class="movie-item-star-icon-wrapper">
           <button
             v-for="star in 5"
             :key="star"
             class="movie-item-star-icon-button"
-            :class="[
-              star <= movie.rating ? 'text-yellow-500' : 'text-gray-500',
-            ]"
+            :class="[star <= movie.rating ? 'text-yellow-500' : 'text-gray-500']"
             :disabled="star === movie.rating"
             @click="updateRating(star)"
           >
@@ -99,17 +79,12 @@ function editMovie() {
           </button>
         </div>
 
-        <div
-          class="group-hover:flex shrink-0 hidden items-center justify-end space-x-2"
-        >
+        <div class="group-hover:flex shrink-0 hidden items-center justify-end space-x-2">
           <div class="movie-item-actions-list-wrapper">
             <button class="movie-item-action-edit-button" @click="editMovie()">
               <PencilIcon class="w-4 h-4" />
             </button>
-            <button
-              class="movie-item-action-remove-button"
-              @click="removeMovie()"
-            >
+            <button class="movie-item-action-remove-button" @click="removeMovie()">
               <TrashIcon class="w-4 h-4" />
             </button>
           </div>
