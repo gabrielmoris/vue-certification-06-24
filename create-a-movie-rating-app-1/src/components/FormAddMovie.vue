@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import AppModal from "./AppModal.vue";
 
 const props = defineProps(["movies", "handleClose", "movie"]);
+const nameInputRef = ref(null);
+
 let movieToSend;
 if (!props.movie) {
   movieToSend = ref({
@@ -50,6 +52,8 @@ const handleClear = () => {
     inTheaters: false,
   };
 };
+
+onMounted(() => nameInputRef.value.focus());
 </script>
 
 <template>
@@ -57,7 +61,7 @@ const handleClear = () => {
     <form class="w-full h-full" @submit="handleSubmit">
       <div class="flex flex-col w-full">
         <label>Name</label>
-        <input class="border border-slate-500 p-1 rounded w-full bg-slate-900" type="text" v-model="movieToSend.name" />
+        <input ref="nameInputRef" class="border border-slate-500 p-1 rounded w-full bg-slate-900" type="text" v-model="movieToSend.name" />
       </div>
       <div class="flex flex-col w-full">
         <label>Description</label>
